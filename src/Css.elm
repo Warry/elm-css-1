@@ -47,6 +47,7 @@ module Css
         , IncompatibleUnits
         , IntOrAuto
         , JustifyContent
+        , Keyframes
         , Length
         , LengthOrAuto
         , LengthOrAutoOrCoverOrContain
@@ -103,6 +104,7 @@ module Css
         , allPetiteCaps
         , allScroll
         , allSmallCaps
+        , animationName
         , any
         , arabicIndic
         , armenian
@@ -342,6 +344,7 @@ module Css
         , justifyAll
         , justifyContent
         , kannada
+        , keyframes
         , khmer
         , lang
         , lao
@@ -1003,6 +1006,11 @@ functions let you define custom properties and selectors, respectively.
 @docs FontSize, ColorValue, ColorStop, IntOrAuto
 
 
+# Animation
+
+@docs keyframes, animationName
+
+
 # Intentionally Unsupported
 
 These are features you might expect to be in elm-css (because they are in the
@@ -1118,6 +1126,11 @@ type alias Number compatible =
 {-| -}
 type alias None compatible =
     { compatible | value : String, none : Compatible }
+
+
+{-| -}
+type alias Keyframes compatible =
+    None { compatible | keyframes : Compatible }
 
 
 {-| -}
@@ -3343,6 +3356,32 @@ translate3d tx ty tz =
     { value = cssFunction "translate3d" [ tx.value, ty.value, tz.value ]
     , transform = Compatible
     }
+
+
+{-| **NOTE:** Some `Style` values will be ignored here.
+
+  - `important` is ignored, [per the CSS spec for keyframes](https://developer.mozilla.org/en-US/docs/Web/CSS/@keyframes#!important_in_a_keyframe).
+  - Pseudo-classes like `hover` are ignored.
+  - Pseudo-elements like `before` are ignored.
+
+-}
+keyframes : List ( Float, List Style ) -> Keyframes compatible
+keyframes tuples =
+    let
+        value =
+            Debug.crash "TODO"
+    in
+    { value = value
+    , none = Compatible
+    , keyframes = Compatible
+    }
+
+
+{-| See [`keyframes`](#keyframes)
+-}
+animationName : Keyframes compatible -> Style
+animationName { value } =
+    WithKeyframes value
 
 
 {-| Sets [`transform`](https://developer.mozilla.org/en-US/docs/Web/CSS/transform)
