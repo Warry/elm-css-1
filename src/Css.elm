@@ -1023,6 +1023,7 @@ deprecated or discouraged.
 
 import Color
 import Css.Preprocess as Preprocess exposing (Style, unwrapSnippet)
+import Css.Preprocess.Resolve as Resolve
 import Css.Structure as Structure exposing (..)
 import Hex
 import String
@@ -1091,6 +1092,9 @@ getOverloadedProperty functionName desiredKey style =
 
         Preprocess.WithMedia mediaQuery _ ->
             property desiredKey ("elm-css-error-cannot-apply-" ++ functionName ++ "-with-inapplicable-Style-for-media-query")
+
+        Preprocess.WithKeyframes _ ->
+            property desiredKey ("elm-css-error-cannot-apply-" ++ functionName ++ "-with-inapplicable-Style-for-keyframes")
 
         Preprocess.ApplyStyles [] ->
             property desiredKey ("elm-css-error-cannot-apply-" ++ functionName ++ "-with-empty-Style")
@@ -3364,23 +3368,18 @@ translate3d tx ty tz =
   - Pseudo-elements like `before` are ignored.
 
 -}
-keyframes : List ( Float, List Style ) -> Keyframes compatible
+keyframes : List ( Float, List Style ) -> Keyframes {}
 keyframes tuples =
-    let
-        value =
-            Debug.crash "TODO"
-    in
-    { value = value
+    { value = Resolve.compileKeyframes tuples
     , none = Compatible
     , keyframes = Compatible
     }
-
 
 {-| See [`keyframes`](#keyframes)
 -}
 animationName : Keyframes compatible -> Style
 animationName { value } =
-    WithKeyframes value
+    Preprocess.WithKeyframes value
 
 
 {-| Sets [`transform`](https://developer.mozilla.org/en-US/docs/Web/CSS/transform)
