@@ -1008,7 +1008,7 @@ functions let you define custom properties and selectors, respectively.
 
 # Animation
 
-@docs keyframes, animationName
+@docs keyframes, animationName, Keyframes
 
 
 # Intentionally Unsupported
